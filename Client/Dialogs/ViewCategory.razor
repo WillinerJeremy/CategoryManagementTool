@@ -1,0 +1,129 @@
+﻿@using CategoryManagementTool.Shared.Models;
+@using CategoryManagementTool.Client.Services;
+
+
+@if (Category != null)
+{
+    <div class="modal Show" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="display: block; width: 80%; overflow-y: auto; left: 10%; background: white;">
+        <div class="modal-dialog" role="document" style="min-height: 100%; min-width: 100%; margin-top: -0.1%; margin-bottom: -0.1%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">View Category @Category.LanguageEntries.GetGermanText()</h5>
+                    <button @onclick="OnModalClose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="min-height:90%; min-width:90%">
+                    <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="viewCategoryId" class="col-sm-2 col-form-label">Id</label>
+                                <label id="viewCategoryId" class="col-sm-8 col-form-label">@Category.Id</label>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Category.ParentCategoryId != null)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div @onclick="GoToViewParentCategory">
+                                        <label style="margin-left: -10px;" for="viewCategoryId" class="col-sm-2 col-form-label">Parent-Category Id</label>
+                                        <label id="lblParentCategoryId" class="col-sm-8 col-form-label">@Category.ParentCategoryId</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <br />
+                    <label style="font-weight: bold; width: 15%" class="col-form-label">Language Entries</label>
+                    @foreach (LanguageEntry languageEntry in Category.LanguageEntries)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="lblLanguageEntryLanguage" class="col-sm-2 col-form-label">Sprache</label>
+                                    <label id="lblLanguageEntryLanguage" class="form-control col-sm-10">@languageEntry.Language</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="lblLanguageEntryText" class="col-sm-2 col-form-label">Text</label>
+                                    <label id="lblLanguageEntryText" class="form-control col-sm-10">@languageEntry.Text</label>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryValue" class="col-sm-2 col-form-label">Wert</label>
+                                    <label id="inputLanguageEntryValue" class="form-control col-sm-10">@languageEntry.Value</label>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <br />
+                    <label style="font-weight:bold; width: 15%" class="col-form-label">Attributes</label>
+                    @if (Category.ParentCategoryId != null)
+                    {
+                        foreach (Category category in GetParentCategories(Category, ApplicationCacheService.Categories))
+                        {
+                            foreach (CategoryAttribute parentAttr in category.CategoryAttributes)
+                            {
+                                <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-sm-12">
+                                                <label id="lblParentAttribute" @onclick="GoToViewParentCategory" style="color: gray;"> @parentAttr.LanguageEntries.GetGermanText()</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        parentCategories = new();
+                    }
+                    @if (Category.CategoryAttributes != null)
+                    {
+                        @foreach (CategoryAttribute attr in Category.CategoryAttributes)
+                        {
+                            <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <label style=" width: 15%"> @attr.LanguageEntries.GetGermanText()</label>
+                                            <button class="btn btn-primary" @onclick="() => ViewAttribute(attr)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button @onclick="Close" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop fade show"></div>
+}
+
+@if (_showViewAttributeModal)
+{
+    <ViewAttribute CategoryAttribute="_selectedAttribute"
+                   OnModalClose="() => { _showViewAttributeModal = false;  }"></ViewAttribute>
+}
+
+<style>
+    #lblParentAttribute:hover {
+        color: black;
+        font-weight: bold;
+    }
+
+    #lblParentCategoryId:hover {
+        color: black;
+        font-weight: bold;
+    }
+</style>

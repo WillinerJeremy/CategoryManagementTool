@@ -1,0 +1,224 @@
+﻿@using System;
+@using CategoryManagementTool.Shared.Models;
+@using CategoryManagementTool.Shared.Enums;
+
+<div class="modal show" tabindex="-1" role="dialog" aria-hidden="true" style="display: block; width: 80%; overflow-y: auto; left: 10%; background: white;">
+    <div class="modal-dialog" role="document" style="min-height: 100%; min-width: 100%; margin-top: -0.1%; margin-bottom: -0.1%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">@_title Attribute @CategoryAttribute.LanguageEntries.GetGermanText()</h5>
+                <button @onclick="Close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="padding-top:5px; margin-bottom: 5px;">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="inputValidationRegex" class="col-sm-2 col-form-label">Validation-Regex</label>
+                            <div class="col-sm-10">
+                                <input @bind="CategoryAttribute.ValidationRegex" type="text" class="form-control" id="inputValidationRegex">
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            <label for="inputUnitType" class="col-sm-2 col-form-label">Unit-Type</label>
+                            <div class="col-sm-10">
+                                <select id="inputUnitType" @bind="CategoryAttribute.UnitType" class="form-select" aria-label="Default select example">
+                                    @foreach (UnitType unitType in Enum.GetValues(typeof(UnitType)))
+                                    {
+                                        <option value="@unitType">@unitType</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            <label for="inputPresentationType" class="col-sm-2 col-form-label">Presentation-Type</label>
+                            <div class="col-sm-10">
+                                <select id="inputPresentationType" @bind="CategoryAttribute.PresentationType" class="form-select" aria-label="Default select example">
+                                    @foreach (PresentationType presentationType in Enum.GetValues(typeof(PresentationType)))
+                                    {
+                                        <option value="@presentationType">@presentationType</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            <label for="inputDataType" class="col-sm-2 col-form-label">Data-Type</label>
+                            <div class="col-sm-10">
+                                <select id="inputDataType" @bind="CategoryAttribute.DataType" class="form-select" aria-label="Default select example">
+                                    @foreach (DataType dataType in Enum.GetValues(typeof(DataType)))
+                                    {
+                                        <option value="@dataType">@dataType</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <label style="font-weight:bold; width:11%" class="col-form-label">Language Entries</label>
+                <button data-toggle="tooltip" data-placement="top" title="Add language-entry" style="margin-top:5px; margin-bottom: 5px;" @onclick="AddLanguageEntry" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+                    </svg>
+                </button>
+                @if (CategoryAttribute.LanguageEntries != null && CategoryAttribute.LanguageEntries.Any())
+                {
+                    foreach (LanguageEntry languageEntry in CategoryAttribute.LanguageEntries)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <button data-toggle="tooltip" data-placement="top" title="Delete language-entry" class="btn btn-primary" style="width: 50px; margin-left: 96%;" @onclick="() => DeleteLanguageEntry(languageEntry)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryText" class="col-sm-2 col-form-label">Language</label>
+                                    <select @bind="languageEntry.Language" class="form-control col-sm-10" aria-label="Default select example">
+                                        @foreach (Language language in Enum.GetValues(typeof(Language)))
+                                        {
+                                            <option value="@language">@language</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryText" class="col-sm-2 col-form-label">Text</label>
+                                    <input @bind="languageEntry.Text" id="inputLanguageEntryText" class="form-control col-sm-10">
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryValue" class="col-sm-2 col-form-label">Value</label>
+                                    <input @bind="languageEntry.Value" id="inputLanguageEntryValue" class="form-control col-sm-10">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <br />
+                <label style="font-weight: bold; width: 11%" class="col-form-label">Regex Descriptions</label>
+                <button data-toggle="tooltip" data-placement="top" title="Add regex-description" style="margin-bottom: 5px; margin-bottom: 5px;" @onclick="AddRegexDescription" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+                    </svg>
+                </button>
+                @if (CategoryAttribute.RegexDescriptions != null && CategoryAttribute.RegexDescriptions.Any())
+                {
+                    foreach (LanguageEntry regexDescription in CategoryAttribute.RegexDescriptions)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <button data-toggle="tooltip" data-placement="top" title="Delete regex-description" class="btn btn-primary" style="width: 50px; margin-left: 96%; " @onclick="() => DeleteRegexDescription(regexDescription)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryText" class="col-sm-2 col-form-label">Language</label>
+                                    <select @bind="regexDescription.Language" class="form-control col-sm-10" aria-label="Default select example">
+                                        @foreach (Language language in Enum.GetValues(typeof(Language)))
+                                        {
+                                            <option value="@language">@language</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryText" class="col-sm-2 col-form-label">Text</label>
+                                    <input @bind="regexDescription.Text" id="inputLanguageEntryText" class="form-control col-sm-10">
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryValue" class="col-sm-2 col-form-label">Value</label>
+                                    <input @bind="regexDescription.Value" id="inputLanguageEntryValue" class="form-control col-sm-10">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <br />
+                <label style="font-weight: bold; width: 11%" class="col-form-label">Possible Values</label>
+                <button data-toggle="tooltip" data-placement="top" title="Add possible-value" style="margin-bottom: 5px;" @onclick="AddPossibleValue" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+                    </svg>
+                </button>
+                @if (CategoryAttribute.PossibleValues != null && CategoryAttribute.PossibleValues.Any())
+                {
+                    foreach (LanguageEntry possibleValue in CategoryAttribute.PossibleValues)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <button data-toggle="tooltip" data-placement="top" title="Delete possible-value" class="btn btn-primary" style="width: 50px; margin-left: 96%; " @onclick="() => DeletePossibleValue(possibleValue)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryText" class="col-sm-2 col-form-label">Language</label>
+                                    <select @bind="possibleValue.Language" class="form-control col-sm-10" aria-label="Default select example">
+                                        @foreach (Language language in Enum.GetValues(typeof(Language)))
+                                        {
+                                            <option value="@language">@language</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryText" class="col-sm-2 col-form-label">Text</label>
+                                    <input @bind="possibleValue.Text" id="inputLanguageEntryText" class="form-control col-sm-10">
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryValue" class="col-sm-2 col-form-label">Value</label>
+                                    <input @bind="possibleValue.Value" id="inputLanguageEntryValue" class="form-control col-sm-10">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <br />
+                <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input @bind="CategoryAttribute.IsIncludedInPreview" class="form-check-input" type="checkbox" value="@CategoryAttribute.IsIncludedInPreview" id="previewCheck">
+                            <label class="form-check-label" for="previewCheck">
+                                Include in preview
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input @bind="CategoryAttribute.IsFilter" class="form-check-input" type="checkbox" value="@CategoryAttribute.IsFilter" id="filterCheck">
+                            <label class="form-check-label" for="filterCheck">
+                                Is filter
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input @bind="CategoryAttribute.IsRequired" class="form-check-input" type="checkbox" value="@CategoryAttribute.IsRequired" id="requiredCheck">
+                            <label class="form-check-label" for="requiredCheck">
+                                Required
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @onclick="CloseAndSave" type="button" class="btn btn-primary" data-dismiss="modal">@GetExitBtnString()</button>
+                <button @onclick="Close" type="button" class="btn btn-primary" data-dismiss="modal">Discard changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop fade show"></div>
+
+@if (_showValidationWarningModal)
+{
+    <ValidationWarningComponent Text="@_validationWarningText"
+                                OnModalClose="() => { _showValidationWarningModal = false; }"></ValidationWarningComponent>
+} 

@@ -1,0 +1,173 @@
+﻿@using CategoryManagementTool.Shared.Models;
+@using System.Linq;
+@using CategoryManagementTool.Shared.Enums;
+@using CategoryManagementTool.Client.Services;
+
+@if (Category != null)
+{
+    <div class="modal Show" tabindex="-1" role="dialog" aria-hidden="true" style="display: block; width: 80%; overflow-y: auto; left: 10%; background: white;">
+        <div class="modal-dialog" role="document" style="min-height: 100%; min-width: 100%; margin-top: -0.1%; margin-bottom: -0.1%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">@_title Category @Category.LanguageEntries.GetGermanText()</h5>
+                    <button @onclick="Close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="min-height:90%; min-width:90%">
+                    <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="viewCategoryId" class="col-sm-2 col-form-label">Id</label>
+                                <input @bind="Category.Id" id="viewCategoryId" class="col-sm-8 col-form-label" disabled>
+                                @if (_title == "Add")
+                                {
+                                    <button style="max-width: 10%; position: relative; left: 4%;" @onclick="OnChangeCategoryId" id="changeIdBtn" class="btn btn-primary col-sm-2">Create Id</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    @if (Category.ParentCategoryId != null)
+                    {
+                        <div class="card" id="parentIdCard" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div @onclick="GoToEditParentCategory">
+                                        <label for="lblParentCategoryId" class="col-sm-2 col-form-label" style="margin-left: -10px;">Parent-Category Id</label>
+                                        <input @bind="Category.ParentCategoryId" id="lblParentCategoryId" class="col-sm-9 col-form-label" style="width: 67.5%;" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                    }
+                    <label style="font-weight: bold; width: 12%" class="col-form-label">Language Entries</label>
+                    <button style="margin-bottom: 5px;" data-toggle="tooltip" data-placement="top" title="Add new language-entry" class="btn btn-primary" @onclick="() => AddLanguageEntry()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+                        </svg>
+                    </button>
+                    @foreach (LanguageEntry languageEntry in Category.LanguageEntries)
+                    {
+                        <div class="card" style="margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <button data-toggle="tooltip" data-placement="top" title="Delete language-entry" class="btn btn-primary" style="width: 50px; margin-left: 96%;" @onclick="() => DeleteLanguageEntry(languageEntry)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryLanguage" class="col-sm-2 col-form-label">Language</label>
+                                    <select id="inputLanguageEntryLanguage" @bind="languageEntry.Language" class="form-control col-sm-10" aria-label="Default select example">
+                                        @foreach (Language language in Enum.GetValues(typeof(Language)))
+                                        {
+                                            <option value="@language">@language</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryText" class="col-sm-2 col-form-label">Text</label>
+                                    <input id="inputLanguageEntryText" class="form-control col-sm-10" @bind="languageEntry.Text" />
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputLanguageEntryValue" class="col-sm-2 col-form-label">Value</label>
+                                    <input id="inputLanguageEntryValue" class="form-control col-sm-10" @bind="languageEntry.Value" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <br>
+                    <label style="font-weight: bold; width: 12%" class="col-form-label">Attributes</label>
+                    <button style="margin-bottom: 5px;" data-toggle="tooltip" data-placement="top" title="Add new attribute" class="btn btn-primary" @onclick="AddAttribute">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+                        </svg>
+                    </button>
+                    @if (Category.ParentCategoryId != null)
+                    {
+                        foreach (Category category in GetParentCategories(Category, ApplicationCacheService.Categories))
+                        {
+                            foreach (CategoryAttribute parentAttr in category.CategoryAttributes)
+                            {
+                                <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-sm-12">
+                                                <label id="lblParentAttribute" @onclick="GoToEditParentCategory" style="color: gray;"> @parentAttr.LanguageEntries.GetGermanText()</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        parentCategories = new();
+                    }
+                    @if (Category.CategoryAttributes != null && Category.CategoryAttributes.Any())
+                    {
+                        @foreach (CategoryAttribute attr in Category.CategoryAttributes)
+                        {
+                            <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <label style=" width: 15%"> @attr.LanguageEntries.GetGermanText()</label>
+                                            <button data-toggle="tooltip" data-placement="top" title="Edit attribute" class="btn btn-primary" @onclick="() => EditAttribute(attr)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                </svg>
+                                            </button>
+                                            <button data-toggle="tooltip" data-placement="top" title="Delete attribute" class="btn btn-primary" @onclick="() => DeleteAttribute(attr)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button @onclick="CloseAndSave" type="button" class="btn btn-primary" data-dismiss="modal">@GetExitBtnString()</button>
+                    <button @onclick="Close" type="button" class="btn btn-primary" data-dismiss="modal">Discard changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop fade show"></div>
+}
+
+@if (_showEditAttributeModal)
+{
+    <EditAttributeComponent Category="_selectedCategory"
+                            CategoryAttribute="_selectedAttribute"
+                            OnModalClose="() => { _showEditAttributeModal = false; }"></EditAttributeComponent>
+}
+
+@if (_showValidationWarningModal)
+{
+<ValidationWarningComponent Text="@_validationWarningText"
+                            OnModalClose="() => { _showValidationWarningModal = false; }"></ValidationWarningComponent>
+}      
+
+<style>
+    #lblParentAttribute:hover {
+        color: black;
+        font-weight: bold;
+    }
+
+    #lblParentCategoryId:hover {
+        color: black;
+        font-weight: bold;
+    }
+</style>     
+
+

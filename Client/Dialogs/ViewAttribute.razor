@@ -1,0 +1,170 @@
+﻿@using CategoryManagementTool.Shared.Models;
+
+@if (CategoryAttribute != null)
+{
+<div class="modal Show" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="display: block; width: 80%; overflow-y: auto; left: 10%; background: white;">
+    <div class="modal-dialog" role="document" style="min-height: 100%; min-width: 100%; margin-top: -0.1%; margin-bottom: -0.1%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">View Attribute @CategoryAttribute.LanguageEntries.GetGermanText()</h5>
+                <button @onclick="OnModalClose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="min-height:90%; min-width:90%">
+                <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="lblValidationRegex" class="col-sm-2 col-form-label">Validation-Regex</label>
+                            <div class="col-sm-10">
+                                <label type="text" class="form-control" id="lblValidationRegex">@CategoryAttribute.ValidationRegex</label>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            <label for="lblUnitType" class="col-sm-2 col-form-label">Unit-Type</label>
+                            <div class="col-sm-10">
+                                <label type="text" class="form-control" id="lblUnitType">@CategoryAttribute.UnitType</label>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            <label for="lblPresentationType" class="col-sm-2 col-form-label">Presentation-Type</label>
+                            <div class="col-sm-10">
+                                <label type="text" class="form-control" id="lblPresentationType">@CategoryAttribute.PresentationType</label>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            <label for="lblDataType" class="col-sm-2 col-form-label">Data-Type</label>
+                            <div class="col-sm-10">
+                                <label type="text" class="form-control" id="lblDataType">@CategoryAttribute.DataType</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <label style="font-weight: bold; width: 15%" class="col-form-label">Language Entries</label>
+                @if (CategoryAttribute.LanguageEntries != null)
+                {
+                    @foreach (LanguageEntry languageEntry in CategoryAttribute.LanguageEntries)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <label placeholder="Language" type="text" class="form-control" id="lblLanguage">@languageEntry.Language</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label placeholder="Text" type="text" class="form-control" id="lblText">@languageEntry.Text</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label placeholder="Value" type="text" class="form-control" id="lblValue">@languageEntry.Value</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <label>Keine Vorhanden!</label>
+                        </div>
+                    </div>
+                }
+                <br />
+                <label style="font-weight: bold; width: 15%" class="col-form-label">Regex Descriptions</label>
+                @if (CategoryAttribute.RegexDescriptions != null)
+                {
+                    @foreach (LanguageEntry regexDescription in CategoryAttribute.RegexDescriptions)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <label placeholder="Language" type="text" class="form-control" id="lblLanguage">@regexDescription.Language</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label placeholder="Text" type="text" class="form-control" id="lblText">@regexDescription.Text</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label placeholder="Value" type="text" class="form-control" id="lblValue">@regexDescription.Value</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <label>Keine Vorhanden!</label>
+                        </div>
+                    </div>
+                }
+                <br />
+                <label style="font-weight: bold; width: 15%" class="col-form-label">Possible Values</label>
+                @if (CategoryAttribute.PossibleValues != null)
+                {
+                    @foreach (LanguageEntry possibleValues in CategoryAttribute.PossibleValues)
+                    {
+                        <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <label placeholder="Language" type="text" class="form-control" id="lblLanguage">@possibleValues.Language</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label placeholder="Text" type="text" class="form-control" id="lblText">@possibleValues.Text</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label placeholder="Value" type="text" class="form-control" id="lblValue">@possibleValues.Value</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <label>Keine Vorhanden!</label>
+                        </div>
+                    </div>
+                }
+
+                <div class="card" style="padding-top: 5px; margin-bottom: 5px;">
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked="@CategoryAttribute.IsIncludedInPreview" id="checkPreview" disabled>
+                            <label class="form-check-label" for="checkPreview">
+                                Included in preview
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked="@CategoryAttribute.IsFilter" id="checkFilter" disabled>
+                            <label class="form-check-label" for="checkFilter">
+                                Is filter
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked="@CategoryAttribute.IsRequired" id="checkRequired" disabled>
+                            <label class="form-check-label" for="checkRequired">
+                                Is required
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @onclick="Close" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+

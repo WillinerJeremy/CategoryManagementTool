@@ -1,0 +1,65 @@
+﻿@page "/categories"
+@using CategoryManagementTool.Client.Dialogs;
+@using Microsoft.AspNetCore.Components;
+@using CategoryManagementTool.Shared.Enums;
+@using CategoryManagementTool.Client.Services;
+
+
+<h1>CategoryManagementTool</h1>
+<div class="form-group row">
+    <div style="max-width: max-content;" class="col">
+        <div class="input-group">
+            <div class="form-outline">
+                <input @bind="SearchText" type="search" id="searchForm" class="form-control" placeholder="Search" />
+            </div>
+            <button type="button" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div style="max-width: max-content;" class="col">
+        <button data-toggle="tooltip" data-placement="top" title="Add new category" class="btn btn-primary" @onclick="AddCategory" disabled="@_isAddBtnDisabled">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+            </svg>
+        </button>
+    </div>
+    <div style="max-width: max-content;" class="col">
+        <button data-toggle="tooltip" data-placement="top" title="Export Categories" class="btn btn-primary" @onclick="RedirectToExportPage">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z" />
+                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+            </svg>
+        </button>
+    </div>
+    <div style="max-width: max-content;" class="col">
+        <select @bind="ViewSelection" id="selectViewCategories" class="form-control">
+            @foreach (ViewSelection viewSelection in Enum.GetValues(typeof(ViewSelection)))
+            {
+                <option value="@viewSelection">@viewSelection</option>
+            }
+        </select>
+    </div>
+</div>
+
+<div>
+    <CategoryTreeViewerComponent AllCategories="_categoriesToShow"
+                                 LevelCategories="@_rootCategories"
+                                 Level="0"
+                                 RerenderWholePage="RerenderWholePage"
+                                 IsDeleteView="@_isDeleteView"
+                                 IsCompareView="@_isCompareView"
+                                 IsAllView="@_isAllView"></CategoryTreeViewerComponent>
+</div>
+
+
+
+@if (_showEditCategoryModal)
+{
+    <EditCategoryComponent Category="null"
+                           ParentCategory="null"
+                           RerenderWholePage="RerenderWholePage"
+                           OnModalClose="OnEditModalClose"></EditCategoryComponent>
+}
